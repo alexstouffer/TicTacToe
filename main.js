@@ -119,8 +119,6 @@ function getCol(td){
   	return result;
 }
 function getDiag1(td){
-    var rowId = td.dataset.row;
-    var colId = td.dataset.col;
     var result = [];
 	for(var i=0, j=0; i < Board.board.length; i++, j++){
         result.push({rowId: i, colId: j, value: Board.board[i][j]});
@@ -128,8 +126,6 @@ function getDiag1(td){
     return result;
 }
 function getDiag2(td){
-    var rowId = td.dataset.row;
-    var colId = td.dataset.col;
     var result = [];
     for(var i=0, j=2; i < Board.board.length; i++, j--){
         result.push({rowId: i, colId: j, value: Board.board[i][j]});
