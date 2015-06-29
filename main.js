@@ -1,4 +1,4 @@
-//Change makeMove to assign the "X" to the array instead of the HTML, and then have it call Board.render(). 
+//Change makeMove to assign the "X" to the array instead of the HTML, and then have it call Board.render().
 //Trigger the makeMove() to show the users selection. You will have to trigger it from the onClick(). I am going to name it onClick() just so I can refer to it.
 //I changed the second if(isRowThreat) call inside the onClick to use item.target instead of item.sender. That was causing an error.
 
@@ -18,7 +18,7 @@ var Board = {
     output += "</tbody></table>";
     $(gameBoard).html(output);
   }
-  
+
 };
 
 var player = "X";
@@ -56,7 +56,7 @@ function answerMove(tdElement){
       }
     });
   }
-	
+
 }
 
 function isRowThreat(row){
@@ -76,19 +76,19 @@ $("#ticTacToe").on("click", "td", function onClick(item){
   makeMove(tdElement);
   answerMove(tdElement);
 });
- 
+
 function getRow(td){
   var rowId = td.dataset.row;
   var result = [];
   Board.board[rowId].forEach(function(item, index){
-	result.push({rowId: rowId, colId: index, value: item}); 
+	result.push({rowId: rowId, colId: index, value: item});
   });
   return result;
 }
 //Pass into getCol() the table data element that was clicked
 //Get Column number from data element
 //Get all elements from column in the main array associated with passed in element, the only column were talking about
-//Which array do we want column from 
+//Which array do we want column from
 function getCol(td){
 	var colId = td.dataset.col;
 	var result = [];
@@ -97,18 +97,23 @@ function getCol(td){
   	}
   	return result;
 }
-function getDiag(){
-	
+function getDiag1(){
+    var result = [];
+	for(var i=0, j=0; i < Board.board.length; i++, j++){
+        result.push({rowId: i, colId: j, value: Board.board[i][j]});
+    }
 }
-function getDiag(){
-
+function getDiag2(){
+    var result = [];
+    for(var i=0, j=2; i < Board.board.length; i++, j--){
+        result.push({rowId: i, colId: j, value: Board.board[i][j]});
+    }
 }
 
 function isGameOver(){
-	//Insert Game Over here 
+	//Insert Game Over here
 }
 
 $(function(){
   Board.render("#ticTacToe");
 });
-
