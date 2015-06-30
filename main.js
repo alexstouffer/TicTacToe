@@ -109,14 +109,20 @@ function answerMove(tdElement){
 };
 
 function makeRoute(){
-    var corner1 = Board.board[0][0];
-    var corner2 = Board.board[0][2];
-    var corner3 = Board.board[2][0];
-    var corner4 = Board.board[2][2];
-    var boardCorners = [corner1, corner2, corner3, corner4];
+    var corner1 = {coordinate: Board.board[0][0], value: null};
+    var corner2 = {coordinate: Board.board[0][2], value: null};
+    var corner3 = {coordinate: Board.board[2][0], value: null};
+    var corner4 = {coordinate: Board.board[2][2], value: null};
+    //var boardCorners = [corner1, corner2, corner3, corner4];
+    var boardCorners = [corner1.coordinate, corner2.coordinate, corner3.coordinate, corner4.coordinate];
     for(var i=0; i < boardCorners.length; i++){
         if(boardCorners[i] == null){
-            boardCorners[i] = {value: "O"};
+            console.log(boardCorners[i]);
+            console.log(Board.board[0][2]);
+            boardCorners[i] = "O";
+            console.log(boardCorners[i]);
+            console.log(Board.board[0][2]);
+
             Board.render("#ticTacToe")
             return;
         }
