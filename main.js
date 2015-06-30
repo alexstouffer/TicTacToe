@@ -1,4 +1,4 @@
-//Change makeMove to assign the "X" to the array instead of the HTML, and then have it call Board.render().
+//Change makeMove to assign the "X" to the array instead of the HTML, and then have it call Board.render()
 //Trigger the makeMove() to show the users selection. You will have to trigger it from the onClick(). I am going to name it onClick() just so I can refer to it.
 //I changed the second if(isRouteThreat) call inside the onClick to use item.target instead of item.sender. That was causing an error.
 var Board = {
@@ -69,7 +69,7 @@ function answerMove(tdElement){
             }
           });
     }
-  //Will the computer lose within next move?
+  //Will the computer lose within opponent's next move?
   else if(isRouteThreat(row)){
   	row.forEach(function(item){
       if(item.value == null){
@@ -103,30 +103,42 @@ function answerMove(tdElement){
                 return;
             }
         })
-    } else {
-        makeRoute();
+    // No immediate win or loss, make routes by filling corners first
+    } else if (Board.board[0][0] == null){
+        Board.board[0][0] = "O"
+        Board.render("#ticTacToe");
+        return;
+    } else if (Board.board[0][2] == null){
+        Board.board[0][2] = "O"
+        Board.render("#ticTacToe");
+        return;
+    } else if (Board.board[2][0] == null){
+        Board.board[2][0] = "O"
+        Board.render("#ticTacToe");
+        return;
+    } else if (Board.board[2][2] == null){
+        Board.board[2][2] = "O"
+        Board.render("#ticTacToe");
+        return;
+    }
+    // The corners are full. find whatever is left
+    else if(isContainingNull(getRow(row))){
+        row.forEach(function(item){
+            if(item.value == null){
+              //Get the rowId. use item, item.rowId, item.colId, Assign "O" to array element in Board.board
+                Board.board[item.rowId][item.colId] = "O";
+              Board.render("#ticTacToe");
+              return;
+            }
+        });
     }
 };
 
-function makeRoute(){
-    var corner1 = {coordinate: Board.board[0][0], value: null};
-    var corner2 = {coordinate: Board.board[0][2], value: null};
-    var corner3 = {coordinate: Board.board[2][0], value: null};
-    var corner4 = {coordinate: Board.board[2][2], value: null};
-    //var boardCorners = [corner1, corner2, corner3, corner4];
-    var boardCorners = [corner1.coordinate, corner2.coordinate, corner3.coordinate, corner4.coordinate];
-    for(var i=0; i < boardCorners.length; i++){
-        if(boardCorners[i] == null){
-            console.log(boardCorners[i]);
-            console.log(Board.board[0][2]);
-            boardCorners[i] = "O";
-            console.log(boardCorners[i]);
-            console.log(Board.board[0][2]);
-
-            Board.render("#ticTacToe")
-            return;
-        }
-    }
+function isContainingNull(route){
+    var nullCount = route.reduce(function(index, item){
+        return index + (item.value === null);
+    }, 0);
+    return nullCount;
 }
 
 function isRouteThreat(route){
