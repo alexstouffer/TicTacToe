@@ -1,8 +1,6 @@
 //Change makeMove to assign the "X" to the array instead of the HTML, and then have it call Board.render().
 //Trigger the makeMove() to show the users selection. You will have to trigger it from the onClick(). I am going to name it onClick() just so I can refer to it.
 //I changed the second if(isRouteThreat) call inside the onClick to use item.target instead of item.sender. That was causing an error.
-
-
 var Board = {
   board: [[null,null,null],[null,null,null],[null,null,null]],
   render: function(gameBoard){
@@ -32,13 +30,47 @@ function makeMove(td){
 }
 
 function answerMove(tdElement){
-	//Insert AI here
-  	//find the null value and relplace it with an "O"
-  var row = getRow(tdElement);
-  var col = getCol(tdElement);
-  var diag1 = getDiag1(tdElement);
-  var diag2 = getDiag2(tdElement);
-  if(isRouteThreat(row)){
+    var row = getRow(tdElement);
+    var col = getCol(tdElement);
+    var diag1 = getDiag1(tdElement);
+    var diag2 = getDiag2(tdElement);
+  //Will the computer win within next move?
+  if(isRouteOpportunity(row)){
+      row.forEach(function(item){
+      if(item.value == null){
+        //Get the rowId. use item, item.rowId, item.colId, Assign "O" to array element in Board.board
+        Board.board[item.rowId][item.colId] = "O";
+        Board.render("#ticTacToe");
+        return;
+      }
+    });
+  } else if(isRouteOpportunity(col)){
+  	col.forEach(function(item){
+        if(item.value == null){
+        	Board.board[item.rowId][item.colId] = "O";
+          Board.render("#ticTacToe");
+          return;
+        }
+      });
+  } else if(isRouteOpportunity(diag1)){
+    	diag1.forEach(function(item){
+          if(item.value == null){
+          	Board.board[item.rowId][item.colId] = "O";
+            Board.render("#ticTacToe");
+            return;
+          }
+        });
+  } else if(isRouteOpportunity(diag2)){
+      	diag2.forEach(function(item){
+            if(item.value == null){
+            	Board.board[item.rowId][item.colId] = "O";
+              Board.render("#ticTacToe");
+              return;
+            }
+          });
+    }
+  //Will the computer lose within next move?
+  else if(isRouteThreat(row)){
   	row.forEach(function(item){
       if(item.value == null){
         //Get the rowId. use item, item.rowId, item.colId, Assign "O" to array element in Board.board
@@ -47,7 +79,7 @@ function answerMove(tdElement){
         return;
       }
     });
-} else if(isRouteThreat(col)){
+  } else if(isRouteThreat(col)){
 	col.forEach(function(item){
       if(item.value == null){
       	Board.board[item.rowId][item.colId] = "O";
@@ -77,7 +109,18 @@ function answerMove(tdElement){
 };
 
 function makeRoute(){
-    console.log("make route");
+    var corner1 = Board.board[0][0];
+    var corner2 = Board.board[0][2];
+    var corner3 = Board.board[2][0];
+    var corner4 = Board.board[2][2];
+    var boardCorners = [corner1, corner2, corner3, corner4];
+    for(var i=0; i < boardCorners.length; i++){
+        if(boardCorners[i] == null){
+            boardCorners[i] = {value: "O"};
+            Board.render("#ticTacToe")
+            return;
+        }
+    }
 }
 
 function isRouteThreat(route){
@@ -90,6 +133,17 @@ function isRouteThreat(route){
   		return index + (item.value === null);
     }, 0);
   	return xCount == 2 && nullCount == 1;
+}
+
+function isRouteOpportunity(route){
+    var search = "O";
+    var oCount = route.reduce(function(index, item){
+        return index + (item.value === search);
+    }, 0);
+    var nullCount = route.reduce(function(index, item){
+        return index + (item.value === null);
+    }, 0);
+    return oCount == 2 && nullCount == 1;
 }
 
 $("#ticTacToe").on("click", "td", function onClick(item){
@@ -135,6 +189,7 @@ function getDiag2(td){
 
 function isGameOver(){
 	//Insert Game Over here
+
 }
 
 (function(){
