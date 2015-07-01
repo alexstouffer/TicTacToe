@@ -103,35 +103,51 @@ function answerMove(tdElement){
                 return;
             }
         })
-    // No immediate win or loss, make routes by filling corners first
+        // No immediate win or loss, first fill center if null, then make routes by filling corners first
+    } else if (Board.board[1][1] == null){
+        Board.board[1][1] = "O";
+        Board.render("#ticTacToe");
+        return;
     } else if (Board.board[0][0] == null){
-        Board.board[0][0] = "O"
+        Board.board[0][0] = "O";
         Board.render("#ticTacToe");
         return;
     } else if (Board.board[0][2] == null){
-        Board.board[0][2] = "O"
+        Board.board[0][2] = "O";
         Board.render("#ticTacToe");
         return;
-    } else if (Board.board[2][0] == null){
-        Board.board[2][0] = "O"
+    }
+    //top edge work-around
+    else if (Board.board[0][1] == null){
+        Board.board[0][1] = "O";
+        Board.render("#ticTacToe");
+        return;
+    }
+    else if (Board.board[2][0] == null){
+        Board.board[2][0] = "O";
         Board.render("#ticTacToe");
         return;
     } else if (Board.board[2][2] == null){
-        Board.board[2][2] = "O"
+        Board.board[2][2] = "O";
         Board.render("#ticTacToe");
         return;
     }
     // The corners are full. find whatever is left
-    else if(isContainingNull(getRow(row))){
-        row.forEach(function(item){
-            if(item.value == null){
-              //Get the rowId. use item, item.rowId, item.colId, Assign "O" to array element in Board.board
-                Board.board[item.rowId][item.colId] = "O";
-              Board.render("#ticTacToe");
-              return;
-            }
-        });
-    }
+     else if (Board.board[1][2] == null){
+         Board.board[1][2] = "O";
+         Board.render("#ticTacToe");
+         return;
+     }
+     else if (Board.board[1][0] == null){
+         Board.board[1][0] = "O";
+         Board.render("#ticTacToe");
+         return;
+     }
+     else if (Board.board[2][1] == null){
+         Board.board[2][1] = "O";
+         Board.render("#ticTacToe");
+         return;
+     }
 };
 
 function isContainingNull(route){
