@@ -221,6 +221,25 @@ function getDiag2(td){
     return result;
 }
 
+function getRowCopy(td){
+  var rowId = td;
+  var result = [];
+  Board.board[rowId].forEach(function(item, index){
+	result.push({rowId: rowId, colId: index, value: item});
+  });
+  return result;
+}
+
+//Need to loop through all routes
+//isWin function will evaluate if resulting arrays
+function getBoardRoutes(){
+    var result = [];
+    for (var i=0; i < 3; i++){
+        result.push(getRowCopy[i]);
+    }
+    return result;
+}
+
 function isGameOver(){
 	//Insert Game Over here
 
