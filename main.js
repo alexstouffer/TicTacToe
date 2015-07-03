@@ -25,7 +25,7 @@ function makeMove(td){
  //check if element is empty. If true, put an "X" in it.
   if (!td) return;
   //get row id , column id, update Board.board[rowId][colId], Board.render();
-  Board.board[td.dataset.row][td.dataset.col] = "X";
+  Board.board[td.dataset.row][td.dataset.col] = player;
   Board.render("#ticTacToe");
 }
 
@@ -39,7 +39,7 @@ function answerMove(tdElement){
       row.forEach(function(item){
       if(item.value == null){
         //Get the rowId. use item, item.rowId, item.colId, Assign "O" to array element in Board.board
-        Board.board[item.rowId][item.colId] = "O";
+        Board.board[item.rowId][item.colId] = computer;
         Board.render("#ticTacToe");
         return;
       }
@@ -47,7 +47,7 @@ function answerMove(tdElement){
   } else if(isRouteOpportunity(col)){
   	col.forEach(function(item){
         if(item.value == null){
-          Board.board[item.rowId][item.colId] = "O";
+          Board.board[item.rowId][item.colId] = computer;
           Board.render("#ticTacToe");
           return;
         }
@@ -55,7 +55,7 @@ function answerMove(tdElement){
   } else if(isRouteOpportunity(diag1)){
     	diag1.forEach(function(item){
           if(item.value == null){
-          	Board.board[item.rowId][item.colId] = "O";
+          	Board.board[item.rowId][item.colId] = computer;
             Board.render("#ticTacToe");
             return;
           }
@@ -63,7 +63,7 @@ function answerMove(tdElement){
   } else if(isRouteOpportunity(diag2)){
       	diag2.forEach(function(item){
             if(item.value == null){
-            	Board.board[item.rowId][item.colId] = "O";
+            	Board.board[item.rowId][item.colId] = computer;
               Board.render("#ticTacToe");
               return;
             }
@@ -73,8 +73,8 @@ function answerMove(tdElement){
   else if(isRouteThreat(row)){
   	row.forEach(function(item){
       if(item.value == null){
-        //Get the rowId. use item, item.rowId, item.colId, Assign "O" to array element in Board.board
-      	Board.board[item.rowId][item.colId] = "O";
+        //Get the rowId. use item, item.rowId, item.colId, Assign computer to array element in Board.board
+      	Board.board[item.rowId][item.colId] = computer;
         Board.render("#ticTacToe");
         return;
       }
@@ -82,7 +82,7 @@ function answerMove(tdElement){
   } else if(isRouteThreat(col)){
 	col.forEach(function(item){
       if(item.value == null){
-      	Board.board[item.rowId][item.colId] = "O";
+      	Board.board[item.rowId][item.colId] = computer;
         Board.render("#ticTacToe");
         return;
       }
@@ -90,7 +90,7 @@ function answerMove(tdElement){
   } else if (isRouteThreat(diag1)){
         diag1.forEach(function(item){
             if(item.value == null){
-                Board.board[item.rowId][item.colId] = "O";
+                Board.board[item.rowId][item.colId] = computer;
                 Board.render("#ticTacToe");
                 return;
             }
@@ -98,53 +98,53 @@ function answerMove(tdElement){
     } else if (isRouteThreat(diag2)){
         diag2.forEach(function(item){
             if(item.value == null){
-                Board.board[item.rowId][item.colId] = "O";
+                Board.board[item.rowId][item.colId] = computer;
                 Board.render("#ticTacToe");
                 return;
             }
         })
         // No immediate win or loss, first fill center if null, then make routes by filling corners first
     } else if (Board.board[1][1] == null){
-        Board.board[1][1] = "O";
+        Board.board[1][1] = computer;
         Board.render("#ticTacToe");
         return;
     } else if (Board.board[0][0] == null){
-        Board.board[0][0] = "O";
+        Board.board[0][0] = computer;
         Board.render("#ticTacToe");
         return;
     } else if (Board.board[0][2] == null){
-        Board.board[0][2] = "O";
+        Board.board[0][2] = computer;
         Board.render("#ticTacToe");
         return;
     }
     //top edge work-around
     else if (Board.board[0][1] == null){
-        Board.board[0][1] = "O";
+        Board.board[0][1] = computer;
         Board.render("#ticTacToe");
         return;
     }
     else if (Board.board[2][0] == null){
-        Board.board[2][0] = "O";
+        Board.board[2][0] = computer;
         Board.render("#ticTacToe");
         return;
     } else if (Board.board[2][2] == null){
-        Board.board[2][2] = "O";
+        Board.board[2][2] = computer;
         Board.render("#ticTacToe");
         return;
     }
     // The corners are full. find whatever is left
      else if (Board.board[1][2] == null){
-         Board.board[1][2] = "O";
+         Board.board[1][2] = computer;
          Board.render("#ticTacToe");
          return;
      }
      else if (Board.board[1][0] == null){
-         Board.board[1][0] = "O";
+         Board.board[1][0] = computer;
          Board.render("#ticTacToe");
          return;
      }
      else if (Board.board[2][1] == null){
-         Board.board[2][1] = "O";
+         Board.board[2][1] = computer;
          Board.render("#ticTacToe");
          return;
      }
@@ -159,7 +159,7 @@ function isContainingNull(route){
 
 function isRouteThreat(route){
 	//if true, add an "O" into the null spot
-  	var search = "X";
+  	var search = player;
 	var xCount = route.reduce(function(index, item) {
   		return index + (item.value === search);
 	}, 0);
@@ -170,7 +170,7 @@ function isRouteThreat(route){
 }
 
 function isRouteOpportunity(route){
-    var search = "O";
+    var search = computer;
     var oCount = route.reduce(function(index, item){
         return index + (item.value === search);
     }, 0);
@@ -180,24 +180,30 @@ function isRouteOpportunity(route){
     return oCount == 2 && nullCount == 1;
 }
 
-function isWinner(route){
-    var xSearch = "X";
-    var oSearch = "O";
-    var xCount = route.reduce(function(index, item){
-        return index + (item.value === xSearch);
-    }, 0);
-    var oCount = route.reduce(function(index, item){
-        return index + (item.value === oSearch);
-    }, 0);
-    return xCount == 3 || oCount == 3;
+function isWinner(tdElement){
+    var getMoveRoutes();
+    var oSearch = computer;
+    var xSearch = player;
+    var oCount =
+}
+
+//pass in 1 tdElement and return all existing routes from previous move that the element is on.
+function getMoveRoutes(tdElement) {
+    var result = [];
+    result.push(getRow(tdElement));
+    result.push(getCol(tdElement));
+    result.push(getDiag1(tdElement));
+    result.push(getDiag2(tdElement));
+    result.forEach(function(index, item){
+        if (!item) { index.pop() };
+    });
+    return result;
 }
 
 $("#ticTacToe").on("click", "td", function onClick(item){
   var tdElement = item.target;
   makeMove(tdElement);
-  isGameOver(getWinner(tdElement));
   answerMove(tdElement);
-  isWinner(tdElement);
 });
 
 function getRow(td){
