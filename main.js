@@ -47,7 +47,7 @@ function answerMove(tdElement){
   } else if(isRouteOpportunity(col)){
   	col.forEach(function(item){
         if(item.value == null){
-        	Board.board[item.rowId][item.colId] = "O";
+          Board.board[item.rowId][item.colId] = "O";
           Board.render("#ticTacToe");
           return;
         }
@@ -180,10 +180,24 @@ function isRouteOpportunity(route){
     return oCount == 2 && nullCount == 1;
 }
 
+function isWinner(route){
+    var xSearch = "X";
+    var oSearch = "O";
+    var xCount = route.reduce(function(index, item){
+        return index + (item.value === xSearch);
+    }, 0);
+    var oCount = route.reduce(function(index, item){
+        return index + (item.value === oSearch);
+    }, 0);
+    return xCount == 3 || oCount == 3;
+}
+
 $("#ticTacToe").on("click", "td", function onClick(item){
   var tdElement = item.target;
   makeMove(tdElement);
+  isGameOver(getWinner(tdElement));
   answerMove(tdElement);
+  isWinner(tdElement);
 });
 
 function getRow(td){
@@ -228,16 +242,6 @@ function getRowCopy(td){
 	result.push({rowId: rowId, colId: index, value: item});
   });
   return result;
-}
-
-//Need to loop through all routes
-//isWin function will evaluate if resulting arrays
-function getBoardRoutes(){
-    var result = [];
-    for (var i=0; i < 3; i++){
-        result.push(getRowCopy[i]);
-    }
-    return result;
 }
 
 function isGameOver(){
