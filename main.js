@@ -150,13 +150,6 @@ function answerMove(tdElement){
      }
 };
 
-function isContainingNull(route){
-    var nullCount = route.reduce(function(index, item){
-        return index + (item.value === null);
-    }, 0);
-    return nullCount;
-}
-
 function isRouteThreat(route){
 	//if true, add an "O" into the null spot
   	var search = player;
@@ -166,7 +159,7 @@ function isRouteThreat(route){
   	var nullCount = route.reduce(function(index, item){
   		return index + (item.value === null);
     }, 0);
-  	return xCount == 2 && nullCount == 1;
+  	return xCount === 2 && nullCount === 1;
 }
 
 function isRouteOpportunity(route){
@@ -177,14 +170,32 @@ function isRouteOpportunity(route){
     var nullCount = route.reduce(function(index, item){
         return index + (item.value === null);
     }, 0);
-    return oCount == 2 && nullCount == 1;
+    return oCount === 2 && nullCount === 1;
 }
 
-function isWinner(tdElement){
-    var getMoveRoutes();
-    var oSearch = computer;
-    var xSearch = player;
-    var oCount =
+//Accepts the tdElement that the player clicked on, and returns any winning routes that move is in.
+// Check array and see if item[i] == pieceType
+function getWinRoute(tdElement){
+    var moveRoutes = getMoveRoutes(tdElement);
+    var winResult = [];
+    moveRoutes.forEach(function(index, item){
+      	var playedPiece = tdElement;
+        var isWin = true;
+        var result = [];
+      	for (var property in index){
+              if (property.value !== playedPiece) isWin = false;
+        }
+        if (isWin) {
+        //Return this row in the results
+            for (var i=0; i < item.length; i++);{
+                result.push(item);
+            }
+
+            winResult.push(result);
+        }
+
+    });
+    return winResult;
 }
 
 //pass in 1 tdElement and return all existing routes from previous move that the element is on.
@@ -195,7 +206,7 @@ function getMoveRoutes(tdElement) {
     result.push(getDiag1(tdElement));
     result.push(getDiag2(tdElement));
     result.forEach(function(index, item){
-        if (!item) { index.pop() };
+        if (item == undefined) result.pop(item);
     });
     return result;
 }
@@ -203,7 +214,9 @@ function getMoveRoutes(tdElement) {
 $("#ticTacToe").on("click", "td", function onClick(item){
   var tdElement = item.target;
   makeMove(tdElement);
+  if (getWinRoute(tdElement).length > 1) isGameOver();
   answerMove(tdElement);
+  if (getWinRoute(tdElement).length > 1) isGameOver();
 });
 
 function getRow(td){
@@ -241,17 +254,9 @@ function getDiag2(td){
     return result;
 }
 
-function getRowCopy(td){
-  var rowId = td;
-  var result = [];
-  Board.board[rowId].forEach(function(item, index){
-	result.push({rowId: rowId, colId: index, value: item});
-  });
-  return result;
-}
-
 function isGameOver(){
 	//Insert Game Over here
+    console.log("Game over!");
 
 }
 
