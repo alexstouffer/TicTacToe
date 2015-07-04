@@ -178,20 +178,18 @@ function isRouteOpportunity(route){
 function getWinRoute(tdElement){
     var moveRoutes = getMoveRoutes(tdElement);
     var winResult = [];
-    moveRoutes.forEach(function(index, item){
+    moveRoutes.forEach(function(item, index){
       	var playedPiece = tdElement;
         var isWin = true;
-        var result = [];
-      	for (var property in index){
-              if (property.value !== playedPiece) isWin = false;
+        for (var i = 0; i < item.length; i++){
+          	for (var property in item){
+                  if (property !== playedPiece) isWin = false;
+            }
         }
         if (isWin) {
         //Return this row in the results
-            for (var i=0; i < item.length; i++);{
-                result.push(item);
-            }
-
-            winResult.push(result);
+            winResult.push(item);
+            console.log(winResult.push(item));
         }
 
     });
@@ -214,9 +212,9 @@ function getMoveRoutes(tdElement) {
 $("#ticTacToe").on("click", "td", function onClick(item){
   var tdElement = item.target;
   makeMove(tdElement);
-  if (getWinRoute(tdElement).length > 1) isGameOver();
+  if (getWinRoute(tdElement).length > 0) isGameOver();
   answerMove(tdElement);
-  if (getWinRoute(tdElement).length > 1) isGameOver();
+  if (getWinRoute(tdElement).length > 0) isGameOver();
 });
 
 function getRow(td){
