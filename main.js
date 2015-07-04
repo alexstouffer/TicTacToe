@@ -1,8 +1,16 @@
 //Change makeMove to assign the "X" to the array instead of the HTML, and then have it call Board.render()
 //Trigger the makeMove() to show the users selection. You will have to trigger it from the onClick(). I am going to name it onClick() just so I can refer to it.
 //I changed the second if(isRouteThreat) call inside the onClick to use item.target instead of item.sender. That was causing an error.
+var newBoard = function(){
+    return [[null,null,null],[null,null,null],[null,null,null]];
+}
+
+var player = "X";
+var computer = "O";
+var isGameOver = false;
+
 var Board = {
-  board: [[null,null,null],[null,null,null],[null,null,null]],
+  board: new newBoard(),
   render: function(gameBoard){
     var output = "<table><tbody>";
     this.board.forEach(function(row, i){
@@ -14,13 +22,18 @@ var Board = {
       output += "</tr>";
     });
     output += "</tbody></table>";
+    output += "<button onClick=\"resetBoard()\">Reset Game</button>"
     $(gameBoard).html(output);
   }
 
 };
 
-var player = "X";
-var computer = "O";
+var resetBoard = function(){
+    isGameOver = false;
+    Board.board = new newBoard();
+    Board.render("#ticTacToe");
+}
+
 function makeMove(td){
  //check if element is empty. If true, put an "X" in it.
   if (!td) return;
@@ -175,7 +188,7 @@ function isRouteOpportunity(route){
 }
 
 //Accepts the tdElement that the player clicked on, and returns any winning routes that move is in.
-// Check array and see if item[i] == pieceType
+// Check array and see if moveRoute[i].value to see if it's different from playedPiece.
 function getWinRoute(tdElement){
     var moveRoutes = getMoveRoutes(tdElement);
     var winResult = [];
@@ -210,9 +223,9 @@ function getMoveRoutes(tdElement) {
 $("#ticTacToe").on("click", "td", function onClick(item){
   var tdElement = item.target;
   makeMove(tdElement);
-  if (getWinRoute(tdElement).length > 0) isGameOver();
+  if (getWinRoute(tdElement).length > 0) isGameOver = true;
   answerMove(tdElement);
-  if (getWinRoute(tdElement).length > 0) isGameOver();
+  if (getWinRoute(tdElement).length > 0) isGameOver = true;
 });
 
 function getRow(td){
@@ -248,11 +261,6 @@ function getDiag2(td){
         result.push({rowId: i, colId: j, value: Board.board[i][j]});
     }
     return result;
-}
-
-function isGameOver(){
-	//Insert Game Over here
-    console.log("Game over!");
 }
 
 (function(){
