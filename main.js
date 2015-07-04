@@ -30,6 +30,7 @@ function makeMove(td){
 }
 
 function answerMove(tdElement){
+
     var row = getRow(tdElement);
     var col = getCol(tdElement);
     var diag1 = getDiag1(tdElement);
@@ -178,18 +179,15 @@ function isRouteOpportunity(route){
 function getWinRoute(tdElement){
     var moveRoutes = getMoveRoutes(tdElement);
     var winResult = [];
-    moveRoutes.forEach(function(item, index){
-      	var playedPiece = tdElement;
+    moveRoutes.forEach(function(moveRoute, index){
+      	var playedPiece = Board.board[tdElement.dataset.row][tdElement.dataset.col];
         var isWin = true;
-        for (var i = 0; i < item.length; i++){
-          	for (var property in item){
-                  if (property !== playedPiece) isWin = false;
-            }
+        for (var i = 0; i < moveRoute.length; i++){
+          if (moveRoute[i].value !== playedPiece) isWin = false;
         }
         if (isWin) {
         //Return this row in the results
-            winResult.push(item);
-            console.log(winResult.push(item));
+            winResult.push(moveRoute[i]);
         }
 
     });
@@ -255,7 +253,6 @@ function getDiag2(td){
 function isGameOver(){
 	//Insert Game Over here
     console.log("Game over!");
-
 }
 
 (function(){
