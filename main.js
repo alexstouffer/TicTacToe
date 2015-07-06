@@ -226,7 +226,7 @@ $("#ticTacToe").on("click", "td", function onClick(item){
   makeMove(tdElement);
   if (getWinRoute(tdElement).length > 0) {
       isGameOver = true;
-      highlightWinRoute(tdElement);
+      highlightWinRoute(winRoutes);
   }
   answerMove(tdElement);
   if (getWinRoute(tdElement).length > 0){
@@ -235,7 +235,7 @@ $("#ticTacToe").on("click", "td", function onClick(item){
   }
 });
 
-function highlightWinRoute(tdElement){
+function highlightWinRoute(winRoutes){
     for (var i=0; i < winRoutes.length; i++){
         winRoutes[i].setAttribute("class", "highlight");
     }
