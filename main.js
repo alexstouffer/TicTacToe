@@ -195,14 +195,14 @@ function getWinRoute(tdElement){
     moveRoutes.forEach(function(moveRoute, index){
       	var playedPiece = Board.board[tdElement.dataset.row][tdElement.dataset.col];
         var isWin = true;
+        //Loop through all 3 items in route and if any of them is not equal to played piece, set isWin = false;
         for (var i = 0; i < moveRoute.length; i++){
           if (moveRoute[i].value !== playedPiece) isWin = false;
-          if (isWin) {
-          //Return this row in the results
-              winResult.push(moveRoute);
-          }
         }
-
+        if (isWin) {
+        //Return this row in the results
+            winResult.push(moveRoute);
+        }
     });
     return winResult;
 }
