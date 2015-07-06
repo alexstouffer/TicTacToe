@@ -222,8 +222,8 @@ function getMoveRoutes(tdElement) {
 
 $("#ticTacToe").on("click", "td", function onClick(item){
   var tdElement = item.target;
-  var winRoutes = getWinRoute(tdElement);
   makeMove(tdElement);
+  var winRoutes = getWinRoute(tdElement);
   if (getWinRoute(tdElement).length > 0) {
       isGameOver = true;
       highlightWinRoute(winRoutes);
