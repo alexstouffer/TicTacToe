@@ -223,10 +223,23 @@ function getMoveRoutes(tdElement) {
 $("#ticTacToe").on("click", "td", function onClick(item){
   var tdElement = item.target;
   makeMove(tdElement);
-  if (getWinRoute(tdElement).length > 0) isGameOver = true;
+  if (getWinRoute(tdElement).length > 0) {
+      isGameOver = true;
+      fillSquares(tdElement);
+  }
   answerMove(tdElement);
-  if (getWinRoute(tdElement).length > 0) isGameOver = true;
+  if (getWinRoute(tdElement).length > 0){
+      isGameOver = true;
+      fillSquares(tdElement);
+  }
 });
+
+function fillSquares(tdElement){
+    var fill = getWinRoute(tdElement);
+
+    fill[i].setAttribute("class", "highlight");
+
+}
 
 function getRow(td){
   var rowId = td.dataset.row;
