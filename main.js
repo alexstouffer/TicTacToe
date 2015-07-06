@@ -197,10 +197,10 @@ function getWinRoute(tdElement){
         var isWin = true;
         for (var i = 0; i < moveRoute.length; i++){
           if (moveRoute[i].value !== playedPiece) isWin = false;
-        }
-        if (isWin) {
-        //Return this row in the results
-            winResult.push(moveRoute[i]);
+          if (isWin) {
+          //Return this row in the results
+              winResult.push(moveRoute);
+          }
         }
 
     });
@@ -222,23 +222,23 @@ function getMoveRoutes(tdElement) {
 
 $("#ticTacToe").on("click", "td", function onClick(item){
   var tdElement = item.target;
+  var winRoutes = getWinRoute(tdElement);
   makeMove(tdElement);
   if (getWinRoute(tdElement).length > 0) {
       isGameOver = true;
-      fillSquares(tdElement);
+      highlightWinRoute(tdElement);
   }
   answerMove(tdElement);
   if (getWinRoute(tdElement).length > 0){
       isGameOver = true;
-      fillSquares(tdElement);
+      highlightWinRoute(tdElement);
   }
 });
 
-function fillSquares(tdElement){
-    var fill = getWinRoute(tdElement);
-
-    fill[i].setAttribute("class", "highlight");
-
+function highlightWinRoute(tdElement){
+    for (var i=0; i < winRoutes.length; i++){
+        winRoutes[i].setAttribute("class", "highlight");
+    }
 }
 
 function getRow(td){
