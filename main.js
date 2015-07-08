@@ -5,6 +5,7 @@ var newBoard = function(){
     return [[null,null,null],[null,null,null],[null,null,null]];
 }
 
+var gameBoardElement = document.getElementById('ticTacToe');
 var player = "X";
 var computer = "O";
 var isGameOver = false;
@@ -246,20 +247,16 @@ $("#ticTacToe").on("click", "td", function onClick(item){
   }
 });
 
-function getTDElementFromBoardElement(){
-    //I have an array element that contains an item from Board array. I want to get the td in the DOM Table.
-    //Can I get a td Element by its data attribute without using jQuery?
-    //Can I get a td Element from a table by knowing its row# and col#.?
-    //We want to find a element by its data-attrbute value
-    //Example: I want to find the first row and the second td. <tr> has children that I can select.
-    //var squareElement = document.get;
-    //var squareModel =
-
-    var elements = document.getElementsByTagName('td');
+function getTDElementFromBoardElement(winRoute){
+//Elements returns a list of elements to evaluate against the model.
+//winRoute is an array of objects. I need to evaluate each object along with its row and col properties.
+// the object is evaluated against elements[i].dataset.row && dataset.col;
+//highlightWinRoute will cycle through a winRoute, and apply a class to elements[i].
+//if winRoute[i].rowId === elements[i].dataset.row && winRoute[i].colId === elements[i].dataset.col, then apply class.
+    var elements = gameBoardElement.getElementsByTagName('td');
     var results = [];
-    var elementCount = elements.length;
-    for (var i=0; i < elementCount; i++){
-        if (elements[i].dataset.row && elements[i].dataset.row){
+    for (var i=0; i < elements.length; i++){
+        if (elements[i].dataset.row == winRoute[i].rowId && elements[i].dataset.col == winRoute[i].colId){
             results.push(elements[i]);
         }
     }
@@ -271,9 +268,10 @@ function getTDElementFromBoardElement(){
 function highlightWinRoute(winRoutes){
     for (var i=0; i < winRoutes.length; i++){
         // The function will accept a boardElement and return a td element.
-        var winRouteElement = winRoutes[i].getElementByTagName("td");
-        //.setAttribute("class", "highlight");
+        getTDElementFromBoardElement(winRoutes[i]);
+
     }
+    return
 }
 
 function getRow(td){
