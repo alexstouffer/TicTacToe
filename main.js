@@ -253,17 +253,38 @@ function getTDElementFromBoardElement(winRoute){
 // the object is evaluated against elements[i].dataset.row && dataset.col;
 //highlightWinRoute will cycle through a winRoute, and apply a class to elements[i].
 //if winRoute[i].rowId === elements[i].dataset.row && winRoute[i].colId === elements[i].dataset.col, then apply class.
+
+//currently our elements and model can be evaluated, but the loop is too big to just increment. All items after indexOf 2 are undefined.
+
     var elements = gameBoardElement.getElementsByTagName('td');
     var results = [];
+    var routeIndex = 0;
     for (var i=0; i < elements.length; i++){
-        if (elements[i].dataset.row == winRoute[i].rowId && elements[i].dataset.col == winRoute[i].colId){
+        if (elements[i].dataset.row == winRoute[routeIndex].rowId && elements[i].dataset.col == winRoute[routeIndex].colId){
             results.push(elements[i]);
         }
     }
     return results;
 }
 
-
+function checkBoardAgainstRoute (winRoute){
+    //loop through all the cells in board and evaluate row && col against route row && col. Once finished add 1 to the routeIndex and call the function again. if routeIndex > 3, reset counter to zero and return.
+    // I can't tell if I should use recursion or a callback.
+    var elements = gameBoardElement.getElementsByTagName('td');
+    var results = [];
+    var routeIndex = 0;
+    if (routeIndex > 2) {
+        return results;
+        routeIndex = 0;
+    }
+    for (var i=0; i < elements.length; i++){
+        if (elements[i].dataset.row == winRoute[routeIndex].rowId && elements[i].dataset.col == winRoute[routeIndex].colId){
+            results.push(elements[i]);
+        }
+    }
+    routeIndex += 1;
+    checkBoardAgainstRoute();
+}
 
 function highlightWinRoute(winRoutes){
     for (var i=0; i < winRoutes.length; i++){
