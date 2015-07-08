@@ -28,6 +28,15 @@ var Board = {
 
 };
 
+//create a class called boardElement. A function that accepts 3 params: rowId, colId, value. Sets all properties to its respective value and returns.
+
+var boardElement = function(rowId, colId, value){
+    this.rowId = rowId;
+    this.colId = colId;
+    this.value = value;
+    return this;
+}
+
 var resetBoard = function(){
     isGameOver = false;
     Board.board = new newBoard();
@@ -221,7 +230,9 @@ function getMoveRoutes(tdElement) {
 }
 
 $("#ticTacToe").on("click", "td", function onClick(item){
+  //check if isGameOver. if it is return null.
   var tdElement = item.target;
+
   makeMove(tdElement);
   var winRoutes = getWinRoute(tdElement);
   if (getWinRoute(tdElement).length > 0) {
@@ -235,9 +246,33 @@ $("#ticTacToe").on("click", "td", function onClick(item){
   }
 });
 
+function getTDElementFromBoardElement(){
+    //I have an array element that contains an item from Board array. I want to get the td in the DOM Table.
+    //Can I get a td Element by its data attribute without using jQuery?
+    //Can I get a td Element from a table by knowing its row# and col#.?
+    //We want to find a element by its data-attrbute value
+    //Example: I want to find the first row and the second td. <tr> has children that I can select.
+    //var squareElement = document.get;
+    //var squareModel =
+
+    var elements = document.getElementsByTagName('td');
+    var results = [];
+    var elementCount = elements.length;
+    for (var i=0; i < elementCount; i++){
+        if (elements[i].dataset.row && elements[i].dataset.row){
+            results.push(elements[i]);
+        }
+    }
+    return results;
+}
+
+
+
 function highlightWinRoute(winRoutes){
     for (var i=0; i < winRoutes.length; i++){
-        winRoutes[i].setAttribute("class", "highlight");
+        // The function will accept a boardElement and return a td element.
+        var winRouteElement = winRoutes[i].getElementByTagName("td");
+        //.setAttribute("class", "highlight");
     }
 }
 
