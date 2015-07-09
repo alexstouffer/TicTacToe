@@ -278,7 +278,9 @@ function highlightWinRoute(winRoute){
         var selection = getTDElementFromBoardElement(winRoute[i]);
         results.push(selection[0]);
     }
-    return results;
+    for (var i=0; i < results.length; i++){
+        results[i].classList.add("highlight");
+    }
 }
 
 function getRow(td){
