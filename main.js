@@ -236,18 +236,22 @@ $("#ticTacToe").on("click", "td", function onClick(item){
 
   makeMove(tdElement);
   var winRoutes = getWinRoute(tdElement);
-  if (getWinRoute(tdElement).length > 0) {
+  if (winRoutes.length > 0) {
       isGameOver = true;
-      highlightWinRoute(winRoutes);
+      for (var i=0; i < winRoutes.length; i++){
+          highlightWinRoute(winRoutes[i]);
+      }
   }
   answerMove(tdElement);
-  if (getWinRoute(tdElement).length > 0){
+  if (winRoutes.length > 0){
       isGameOver = true;
-      highlightWinRoute(tdElement);
+      for (var i=0; i < winRoutes.length; i++){
+          highlightWinRoute(winRoutes[i]);
+      }
   }
 });
 
-function getTDElementFromBoardElement(winRoute){
+function getTDElementFromBoardElement(routeObject){
 //Elements returns a list of elements to evaluate against the model.
 //winRoute is an array of objects. I need to evaluate each object along with its row and col properties.
 // the object is evaluated against elements[i].dataset.row && dataset.col;
@@ -260,39 +264,21 @@ function getTDElementFromBoardElement(winRoute){
     var results = [];
     var routeIndex = 0;
     for (var i=0; i < elements.length; i++){
-        if (elements[i].dataset.row == winRoute[routeIndex].rowId && elements[i].dataset.col == winRoute[routeIndex].colId){
+        if (elements[i].dataset.row == routeObject.rowId && elements[i].dataset.col == routeObject.colId){
             results.push(elements[i]);
         }
     }
     return results;
 }
 
-function checkBoardAgainstRoute (winRoute){
-    //loop through all the cells in board and evaluate row && col against route row && col. Once finished add 1 to the routeIndex and call the function again. if routeIndex > 3, reset counter to zero and return.
-    // I can't tell if I should use recursion or a callback.
-    var elements = gameBoardElement.getElementsByTagName('td');
+function highlightWinRoute(winRoute){
     var results = [];
-    var routeIndex = 0;
-    if (routeIndex > 2) {
-        return results;
-        routeIndex = 0;
-    }
-    for (var i=0; i < elements.length; i++){
-        if (elements[i].dataset.row == winRoute[routeIndex].rowId && elements[i].dataset.col == winRoute[routeIndex].colId){
-            results.push(elements[i]);
-        }
-    }
-    routeIndex += 1;
-    checkBoardAgainstRoute();
-}
-
-function highlightWinRoute(winRoutes){
-    for (var i=0; i < winRoutes.length; i++){
+    for (var i=0; i < winRoute.length; i++){
         // The function will accept a boardElement and return a td element.
-        getTDElementFromBoardElement(winRoutes[i]);
-
+        var selection = getTDElementFromBoardElement(winRoute[i]);
+        results.push(selection[0]);
     }
-    return
+    return results;
 }
 
 function getRow(td){
