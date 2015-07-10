@@ -9,6 +9,7 @@ var gameBoardElement = document.getElementById('ticTacToe');
 var player = "X";
 var computer = "O";
 var isGameOver = false;
+var computerLastMove;
 
 var Board = {
   board: new newBoard(),
@@ -64,6 +65,7 @@ function answerMove(tdElement){
       if(item.value == null){
         //Get the rowId. use item, item.rowId, item.colId, Assign "O" to array element in Board.board
         Board.board[item.rowId][item.colId] = computer;
+        computerLastMove = {rowId: rowId, colId: colId, value: Board.board[item.rowId][item.colId]};
         Board.render("#ticTacToe");
         return;
       }
@@ -72,6 +74,7 @@ function answerMove(tdElement){
   	col.forEach(function(item){
         if(item.value == null){
           Board.board[item.rowId][item.colId] = computer;
+          computerLastMove = {rowId: rowId, colId: colId, value: Board.board[item.rowId][item.colId]};
           Board.render("#ticTacToe");
           return;
         }
@@ -80,6 +83,7 @@ function answerMove(tdElement){
     	diag1.forEach(function(item){
           if(item.value == null){
           	Board.board[item.rowId][item.colId] = computer;
+            computerLastMove = {rowId: rowId, colId: colId, value: Board.board[item.rowId][item.colId]};
             Board.render("#ticTacToe");
             return;
           }
@@ -88,6 +92,7 @@ function answerMove(tdElement){
       	diag2.forEach(function(item){
             if(item.value == null){
             	Board.board[item.rowId][item.colId] = computer;
+                computerLastMove = {rowId: rowId, colId: colId, value: Board.board[item.rowId][item.colId]};
               Board.render("#ticTacToe");
               return;
             }
@@ -99,6 +104,7 @@ function answerMove(tdElement){
       if(item.value == null){
         //Get the rowId. use item, item.rowId, item.colId, Assign computer to array element in Board.board
       	Board.board[item.rowId][item.colId] = computer;
+        computerLastMove = {rowId: rowId, colId: colId, value: Board.board[item.rowId][item.colId]};
         Board.render("#ticTacToe");
         return;
       }
@@ -107,6 +113,7 @@ function answerMove(tdElement){
 	col.forEach(function(item){
       if(item.value == null){
       	Board.board[item.rowId][item.colId] = computer;
+        computerLastMove = {rowId: rowId, colId: colId, value: Board.board[item.rowId][item.colId]};
         Board.render("#ticTacToe");
         return;
       }
@@ -115,6 +122,7 @@ function answerMove(tdElement){
         diag1.forEach(function(item){
             if(item.value == null){
                 Board.board[item.rowId][item.colId] = computer;
+                computerLastMove = {rowId: rowId, colId: colId, value: Board.board[item.rowId][item.colId]};
                 Board.render("#ticTacToe");
                 return;
             }
@@ -123,6 +131,7 @@ function answerMove(tdElement){
         diag2.forEach(function(item){
             if(item.value == null){
                 Board.board[item.rowId][item.colId] = computer;
+                computerLastMove = {rowId: rowId, colId: colId, value: Board.board[item.rowId][item.colId]};
                 Board.render("#ticTacToe");
                 return;
             }
@@ -130,45 +139,54 @@ function answerMove(tdElement){
         // No immediate win or loss, first fill center if null, then make routes by filling corners first
     } else if (Board.board[1][1] == null){
         Board.board[1][1] = computer;
+        computerLastMove = {rowId: 1, colId: 1, value: Board.board[1][1]};
         Board.render("#ticTacToe");
         return;
     } else if (Board.board[0][0] == null){
         Board.board[0][0] = computer;
+        computerLastMove = {rowId: 0, colId: 0, value: Board.board[0][0]};
         Board.render("#ticTacToe");
         return;
     } else if (Board.board[0][2] == null){
         Board.board[0][2] = computer;
+        computerLastMove = {rowId: 0, colId: 2, value: Board.board[0][2]};
         Board.render("#ticTacToe");
         return;
     }
     //top edge work-around
     else if (Board.board[0][1] == null){
         Board.board[0][1] = computer;
+        computerLastMove = {rowId: 0, colId: 1, value: Board.board[0][1]};
         Board.render("#ticTacToe");
         return;
     }
     else if (Board.board[2][0] == null){
         Board.board[2][0] = computer;
+        computerLastMove = {rowId: 2, colId: 0, value: Board.board[2][0]};
         Board.render("#ticTacToe");
         return;
     } else if (Board.board[2][2] == null){
         Board.board[2][2] = computer;
+        computerLastMove = {rowId: 2, colId: 2, value: Board.board[2][2]};
         Board.render("#ticTacToe");
         return;
     }
     // The corners are full. find whatever is left
      else if (Board.board[1][2] == null){
          Board.board[1][2] = computer;
+         computerLastMove = {rowId: 1, colId: 2, value: Board.board[1][2]};
          Board.render("#ticTacToe");
          return;
      }
      else if (Board.board[1][0] == null){
          Board.board[1][0] = computer;
+         computerLastMove = {rowId: 1, colId: 0, value: Board.board[1][0]};
          Board.render("#ticTacToe");
          return;
      }
      else if (Board.board[2][1] == null){
          Board.board[2][1] = computer;
+         computerLastMove = {rowId: 2, colId: 1, value: Board.board[2][1]};
          Board.render("#ticTacToe");
          return;
      }
@@ -232,6 +250,7 @@ function getMoveRoutes(tdElement) {
 
 $("#ticTacToe").on("click", "td", function onClick(item){
   //check if isGameOver. if it is return null.
+  //we currently only check against the player move using tdElement. But that doesn't evaluate the computer's last move.
   var tdElement = item.target;
 
   makeMove(tdElement);
@@ -241,6 +260,7 @@ $("#ticTacToe").on("click", "td", function onClick(item){
       for (var i=0; i < winRoutes.length; i++){
           highlightWinRoute(winRoutes[i]);
       }
+      return null;
   }
   answerMove(tdElement);
   if (winRoutes.length > 0){
@@ -248,6 +268,7 @@ $("#ticTacToe").on("click", "td", function onClick(item){
       for (var i=0; i < winRoutes.length; i++){
           highlightWinRoute(winRoutes[i]);
       }
+      return null;
   }
 });
 
