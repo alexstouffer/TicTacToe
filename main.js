@@ -10,6 +10,7 @@ var player = "X";
 var computer = "O";
 var isGameOver = false;
 var computerLastMove;
+var computerTDElement;
 
 var Board = {
   board: new newBoard(),
@@ -219,6 +220,7 @@ function isRouteOpportunity(route){
 // Check array and see if moveRoute[i].value to see if it's different from playedPiece.
 function getWinRoute(tdElement){
     var moveRoutes = getMoveRoutes(tdElement);
+    var AIRoutes = getMoveRoutes(computerTDElement);
     var winResult = [];
     moveRoutes.forEach(function(moveRoute, index){
       	var playedPiece = Board.board[tdElement.dataset.row][tdElement.dataset.col];
@@ -255,6 +257,7 @@ $("#ticTacToe").on("click", "td", function onClick(item){
 
   makeMove(tdElement);
   var winRoutes = getWinRoute(tdElement);
+  var computerWinRoutes = getWinRoute(computerTDElement);
   if (winRoutes.length > 0) {
       isGameOver = true;
       for (var i=0; i < winRoutes.length; i++){
@@ -263,10 +266,10 @@ $("#ticTacToe").on("click", "td", function onClick(item){
       return null;
   }
   answerMove(tdElement);
-  if (winRoutes.length > 0){
+  if (computerWinRoutes.length > 0){
       isGameOver = true;
-      for (var i=0; i < winRoutes.length; i++){
-          highlightWinRoute(winRoutes[i]);
+      for (var i=0; i < computerWinRoutes.length; i++){
+          highlightWinRoute(computerWinRoutes[i]);
       }
       return null;
   }
