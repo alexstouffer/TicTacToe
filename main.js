@@ -10,7 +10,6 @@ var human = "X";
 var computer = "O";
 var isGameOver = false;
 var computerLastMove;
-var computerTDElement;
 
 var Board = {
   board: new newBoard(),
@@ -54,6 +53,22 @@ function makeMove(td){
   Board.render("#ticTacToe");
 }
 
+function isRouteType(route, type){
+    if (type === "Threat"){
+        var search = human;
+    } else if (type === "Opportunity"){
+        var search = computer;
+    }
+    var itemCount = route.reduce(function(index, item) {
+        return index + (item.value === search);
+    }, 0);
+    var nullCount = route.reduce(function(index, item){
+        return index + (item.value === null);
+    }, 0);
+    return itemCount === 2 && nullCount == 1;
+}
+
+
 function moveIfGood (route){
     // routePieces param will be passed human || computer.
     route.forEach(function(item){
@@ -81,23 +96,23 @@ function answerMove(tdElement){
     var diag1 = getDiag1(tdElement);
     var diag2 = getDiag2(tdElement);
   //Will the computer win within next move?
-    if(isRouteOpportunity(row)){
+    if(isRouteType(row, "Opportunity")){
       moveIfGood(row);
-    } else if(isRouteOpportunity(col)){
+  } else if(isRouteType(col, "Opportunity")){
       moveIfGood(col);
-    } else if(isRouteOpportunity(diag1)){
+    } else if(isRouteType(diag1, "Opportunity")){
       moveIfGood(diag1);
-    } else if(isRouteOpportunity(diag2)){
+  } else if(isRouteType(diag2, "Opportunity")){
       moveIfGood(diag2);
     }
     //Will the computer lose within opponent's next move?
-    else if(isRouteThreat(row)){
+    else if(isRouteType(row, "Threat")){
       moveIfGood(row);
-    } else if(isRouteThreat(col)){
+    } else if(isRouteType(col, "Threat")){
       moveIfGood(col);
-    } else if (isRouteThreat(diag1)){
+    } else if (isRouteType(diag1, "Threat")){
       moveIfGood(diag1);
-    } else if (isRouteThreat(diag2)){
+    } else if (isRouteType(diag2, "Threat")){
       moveIfGood(diag2);
       // No immediate win or loss, first fill center if null, then make routes by filling corners first
     } else if (Board.board[1][1] == null){
@@ -128,32 +143,6 @@ function answerMove(tdElement){
      }
 };
 
-function isRouteType(route, type){
-
-}
-
-function isRouteThreat(route){
-	//if true, add an "O" into the null spot
-  	var search = human;
-	var xCount = route.reduce(function(index, item) {
-  		return index + (item.value === search);
-	}, 0);
-  	var nullCount = route.reduce(function(index, item){
-  		return index + (item.value === null);
-    }, 0);
-  	return xCount === 2 && nullCount === 1;
-}
-
-function isRouteOpportunity(route){
-    var search = computer;
-    var oCount = route.reduce(function(index, item){
-        return index + (item.value === search);
-    }, 0);
-    var nullCount = route.reduce(function(index, item){
-        return index + (item.value === null);
-    }, 0);
-    return oCount === 2 && nullCount === 1;
-}
 
 //Accepts the tdElement that the human clicked on, and returns any winning routes that move is in.
 // Check array and see if moveRoute[i].value to see if it's different from playedPiece.
@@ -193,9 +182,10 @@ $("#ticTacToe").on("click", "td", function onClick(item){
   //we currently only check against the human move using tdElement. But that doesn't evaluate the computer's last move.
   if (isGameOver) return null;
   var tdElement = item.target;
+  var computerTDElement = getTDElementFromBoardElement(computerLastMove)[0];
   makeMove(tdElement);
   var winRoutes = getWinRoute(tdElement);
-  var computerWinRoutes = getWinRoute(tdElement);
+  var computerWinRoutes = getWinRoute(computerTDElement);
 
   if (winRoutes.length > 0) {
       isGameOver = true;
@@ -245,6 +235,7 @@ function highlightWinRoute(winRoute){
     }
 }
 
+//4 routes for possible win: row, column, and 2 diagonals.
 function getRow(td){
   var rowId = td.dataset.row;
   var result = [];
@@ -253,10 +244,6 @@ function getRow(td){
   });
   return result;
 }
-//Pass into getCol() the table data element that was clicked
-//Get Column number from data element
-//Get all elements from column in the main array associated with passed in element, the only column were talking about
-//Which array do we want column from
 function getCol(td){
 	var colId = td.dataset.col;
 	var result = [];
@@ -280,6 +267,7 @@ function getDiag2(td){
     return result;
 }
 
+//Initiate Game on Page Load
 (function(){
   Board.render("#ticTacToe");
 })();
