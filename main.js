@@ -128,6 +128,9 @@ function answerMove(tdElement){
      }
 };
 
+function isRouteType(route, type){
+
+}
 
 function isRouteThreat(route){
 	//if true, add an "O" into the null spot
@@ -188,6 +191,7 @@ function getMoveRoutes(tdElement) {
 $("#ticTacToe").on("click", "td", function onClick(item){
   //check if isGameOver. if it is return null.
   //we currently only check against the human move using tdElement. But that doesn't evaluate the computer's last move.
+  if (isGameOver) return null;
   var tdElement = item.target;
   makeMove(tdElement);
   var winRoutes = getWinRoute(tdElement);
@@ -198,7 +202,6 @@ $("#ticTacToe").on("click", "td", function onClick(item){
       for (var i=0; i < winRoutes.length; i++){
           highlightWinRoute(winRoutes[i]);
       }
-      return null;
   }
 
   answerMove(tdElement);
@@ -207,7 +210,6 @@ $("#ticTacToe").on("click", "td", function onClick(item){
       for (var i=0; i < computerWinRoutes.length; i++){
           highlightWinRoute(computerWinRoutes[i]);
       }
-      return null;
   }
 });
 
