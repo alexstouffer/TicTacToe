@@ -6,7 +6,7 @@ var newBoard = function(){
 }
 
 var gameBoardElement = document.getElementById('ticTacToe');
-var player = "X";
+var human = "X";
 var computer = "O";
 var isGameOver = false;
 var computerLastMove;
@@ -50,8 +50,28 @@ function makeMove(td){
  //check if element is empty. If true, put an "X" in it.
   if (!td) return;
   //get row id , column id, update Board.board[rowId][colId], Board.render();
-  Board.board[td.dataset.row][td.dataset.col] = player;
+  Board.board[td.dataset.row][td.dataset.col] = human;
   Board.render("#ticTacToe");
+}
+
+function moveIfGood (route){
+    // routePieces param will be passed human || computer.
+    route.forEach(function(item){
+        if(item.value == null){
+          //Get the rowId. use item, item.rowId, item.colId, Assign "O" to array element in Board.board
+          Board.board[item.rowId][item.colId] = computer;
+          computerLastMove = {rowId: item.rowId, colId: item.colId, value: Board.board[item.rowId][item.colId]};
+          Board.render("#ticTacToe");
+          return;
+        }
+    });
+}
+
+function fillNullSquare (i, j){
+    Board.board[i][j] = computer;
+    computerLastMove = {rowId: i, colId: j, value: Board.board[i][j]};
+    Board.render("#ticTacToe");
+    return;
 }
 
 function answerMove(tdElement){
@@ -61,141 +81,57 @@ function answerMove(tdElement){
     var diag1 = getDiag1(tdElement);
     var diag2 = getDiag2(tdElement);
   //Will the computer win within next move?
-  if(isRouteOpportunity(row)){
-      row.forEach(function(item){
-      if(item.value == null){
-        //Get the rowId. use item, item.rowId, item.colId, Assign "O" to array element in Board.board
-        Board.board[item.rowId][item.colId] = computer;
-        computerLastMove = {rowId: rowId, colId: colId, value: Board.board[item.rowId][item.colId]};
-        Board.render("#ticTacToe");
-        return;
-      }
-    });
-  } else if(isRouteOpportunity(col)){
-  	col.forEach(function(item){
-        if(item.value == null){
-          Board.board[item.rowId][item.colId] = computer;
-          computerLastMove = {rowId: rowId, colId: colId, value: Board.board[item.rowId][item.colId]};
-          Board.render("#ticTacToe");
-          return;
-        }
-      });
-  } else if(isRouteOpportunity(diag1)){
-    	diag1.forEach(function(item){
-          if(item.value == null){
-          	Board.board[item.rowId][item.colId] = computer;
-            computerLastMove = {rowId: rowId, colId: colId, value: Board.board[item.rowId][item.colId]};
-            Board.render("#ticTacToe");
-            return;
-          }
-        });
-  } else if(isRouteOpportunity(diag2)){
-      	diag2.forEach(function(item){
-            if(item.value == null){
-            	Board.board[item.rowId][item.colId] = computer;
-                computerLastMove = {rowId: rowId, colId: colId, value: Board.board[item.rowId][item.colId]};
-              Board.render("#ticTacToe");
-              return;
-            }
-          });
+    if(isRouteOpportunity(row)){
+      moveIfGood(row);
+    } else if(isRouteOpportunity(col)){
+      moveIfGood(col);
+    } else if(isRouteOpportunity(diag1)){
+      moveIfGood(diag1);
+    } else if(isRouteOpportunity(diag2)){
+      moveIfGood(diag2);
     }
-  //Will the computer lose within opponent's next move?
-  else if(isRouteThreat(row)){
-  	row.forEach(function(item){
-      if(item.value == null){
-        //Get the rowId. use item, item.rowId, item.colId, Assign computer to array element in Board.board
-      	Board.board[item.rowId][item.colId] = computer;
-        computerLastMove = {rowId: rowId, colId: colId, value: Board.board[item.rowId][item.colId]};
-        Board.render("#ticTacToe");
-        return;
-      }
-    });
-  } else if(isRouteThreat(col)){
-	col.forEach(function(item){
-      if(item.value == null){
-      	Board.board[item.rowId][item.colId] = computer;
-        computerLastMove = {rowId: rowId, colId: colId, value: Board.board[item.rowId][item.colId]};
-        Board.render("#ticTacToe");
-        return;
-      }
-    });
-  } else if (isRouteThreat(diag1)){
-        diag1.forEach(function(item){
-            if(item.value == null){
-                Board.board[item.rowId][item.colId] = computer;
-                computerLastMove = {rowId: rowId, colId: colId, value: Board.board[item.rowId][item.colId]};
-                Board.render("#ticTacToe");
-                return;
-            }
-        });
+    //Will the computer lose within opponent's next move?
+    else if(isRouteThreat(row)){
+      moveIfGood(row);
+    } else if(isRouteThreat(col)){
+      moveIfGood(col);
+    } else if (isRouteThreat(diag1)){
+      moveIfGood(diag1);
     } else if (isRouteThreat(diag2)){
-        diag2.forEach(function(item){
-            if(item.value == null){
-                Board.board[item.rowId][item.colId] = computer;
-                computerLastMove = {rowId: rowId, colId: colId, value: Board.board[item.rowId][item.colId]};
-                Board.render("#ticTacToe");
-                return;
-            }
-        })
-        // No immediate win or loss, first fill center if null, then make routes by filling corners first
+      moveIfGood(diag2);
+      // No immediate win or loss, first fill center if null, then make routes by filling corners first
     } else if (Board.board[1][1] == null){
-        Board.board[1][1] = computer;
-        computerLastMove = {rowId: 1, colId: 1, value: Board.board[1][1]};
-        Board.render("#ticTacToe");
-        return;
+        fillNullSquare(1, 1);
     } else if (Board.board[0][0] == null){
-        Board.board[0][0] = computer;
-        computerLastMove = {rowId: 0, colId: 0, value: Board.board[0][0]};
-        Board.render("#ticTacToe");
-        return;
+        fillNullSquare(0, 0);
     } else if (Board.board[0][2] == null){
-        Board.board[0][2] = computer;
-        computerLastMove = {rowId: 0, colId: 2, value: Board.board[0][2]};
-        Board.render("#ticTacToe");
-        return;
+        fillNullSquare(0, 2);
     }
     //top edge work-around
     else if (Board.board[0][1] == null){
-        Board.board[0][1] = computer;
-        computerLastMove = {rowId: 0, colId: 1, value: Board.board[0][1]};
-        Board.render("#ticTacToe");
-        return;
+        fillNullSquare(0, 1);
     }
     else if (Board.board[2][0] == null){
-        Board.board[2][0] = computer;
-        computerLastMove = {rowId: 2, colId: 0, value: Board.board[2][0]};
-        Board.render("#ticTacToe");
-        return;
+        fillNullSquare(2, 0);
     } else if (Board.board[2][2] == null){
-        Board.board[2][2] = computer;
-        computerLastMove = {rowId: 2, colId: 2, value: Board.board[2][2]};
-        Board.render("#ticTacToe");
-        return;
+        fillNullSquare(2, 2);
     }
     // The corners are full. find whatever is left
      else if (Board.board[1][2] == null){
-         Board.board[1][2] = computer;
-         computerLastMove = {rowId: 1, colId: 2, value: Board.board[1][2]};
-         Board.render("#ticTacToe");
-         return;
+         fillNullSquare(1, 2);
      }
      else if (Board.board[1][0] == null){
-         Board.board[1][0] = computer;
-         computerLastMove = {rowId: 1, colId: 0, value: Board.board[1][0]};
-         Board.render("#ticTacToe");
-         return;
+         fillNullSquare(1, 2);
      }
      else if (Board.board[2][1] == null){
-         Board.board[2][1] = computer;
-         computerLastMove = {rowId: 2, colId: 1, value: Board.board[2][1]};
-         Board.render("#ticTacToe");
-         return;
+         fillNullSquare(2, 1);
      }
 };
 
+
 function isRouteThreat(route){
 	//if true, add an "O" into the null spot
-  	var search = player;
+  	var search = human;
 	var xCount = route.reduce(function(index, item) {
   		return index + (item.value === search);
 	}, 0);
@@ -216,14 +152,13 @@ function isRouteOpportunity(route){
     return oCount === 2 && nullCount === 1;
 }
 
-//Accepts the tdElement that the player clicked on, and returns any winning routes that move is in.
+//Accepts the tdElement that the human clicked on, and returns any winning routes that move is in.
 // Check array and see if moveRoute[i].value to see if it's different from playedPiece.
-function getWinRoute(tdElement){
-    var moveRoutes = getMoveRoutes(tdElement);
-    var AIRoutes = getMoveRoutes(computerTDElement);
+function getWinRoute(passedElement){
+    var moveRoutes = getMoveRoutes(passedElement);
     var winResult = [];
     moveRoutes.forEach(function(moveRoute, index){
-      	var playedPiece = Board.board[tdElement.dataset.row][tdElement.dataset.col];
+      	var playedPiece = Board.board[passedElement.dataset.row][passedElement.dataset.col];
         var isWin = true;
         //Loop through all 3 items in route and if any of them is not equal to played piece, set isWin = false;
         for (var i = 0; i < moveRoute.length; i++){
@@ -252,12 +187,12 @@ function getMoveRoutes(tdElement) {
 
 $("#ticTacToe").on("click", "td", function onClick(item){
   //check if isGameOver. if it is return null.
-  //we currently only check against the player move using tdElement. But that doesn't evaluate the computer's last move.
+  //we currently only check against the human move using tdElement. But that doesn't evaluate the computer's last move.
   var tdElement = item.target;
-
   makeMove(tdElement);
   var winRoutes = getWinRoute(tdElement);
-  var computerWinRoutes = getWinRoute(computerTDElement);
+  var computerWinRoutes = getWinRoute(tdElement);
+
   if (winRoutes.length > 0) {
       isGameOver = true;
       for (var i=0; i < winRoutes.length; i++){
@@ -265,6 +200,7 @@ $("#ticTacToe").on("click", "td", function onClick(item){
       }
       return null;
   }
+
   answerMove(tdElement);
   if (computerWinRoutes.length > 0){
       isGameOver = true;
