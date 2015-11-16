@@ -48,10 +48,15 @@ var Game = ({
     },
     makeMove: function (td) {
         //check if element is empty. If true, put an "X" in it.
-        if (!td) return;
         //get row id , column id, update Board.board[rowId][colId], Board.render();
+        if (Board.board[td.dataset.row][td.dataset.col] == null) {
         Board.board[td.dataset.row][td.dataset.col] = human;
+        Board.board[td.dataset.row][td.dataset.col].readonly = true;
         Board.render("#ticTacToe");
+      } else {
+        alert("this square has already been chosen.");
+        Game.makeMove(tdElement);
+      }
     },
     answerMove: function (tdElement) {
 
@@ -112,6 +117,7 @@ var Game = ({
             if (item.value == null) {
                 //Get the rowId. use item, item.rowId, item.colId, Assign "O" to array element in Board.board
                 Board.board[item.rowId][item.colId] = computer;
+                Board.board[item.rowId][item.colId].readonly = true;
                 Board.render("#ticTacToe");
                 return { rowId: item.rowId, colId: item.colId, value: Board.board[item.rowId][item.colId] };
             }
@@ -120,6 +126,7 @@ var Game = ({
     },
     fillNullSquare: function (i, j) {
         Board.board[i][j] = computer;
+        Board.board[i][j].readonly = true;
         Board.render("#ticTacToe");
         return { rowId: i, colId: j, value: Board.board[i][j] };
     }
