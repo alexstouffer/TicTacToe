@@ -1,25 +1,43 @@
 <!DOCTYPE html>
 <html>
-<head>
-<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-<meta name="description" content="Object.freeze()">
-  <meta charset="utf-8">
-  <title>Tic-Tac-Toe</title>
-<style>
-  #ticTacToe td {
-    border: 2px solid black;
-    font-size: 54px;
-    width: 80px;
-    height: 80px;
-    text-align: center;
-  }
 
-  .highlight {
+<head>
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <meta name="description" content="Object.freeze()">
+  <meta charset="utf-8">
+  <template id="board">
+    <table>
+      <tbody>
+        {{> row}}
+      </tbody>
+    </table>
+  </template>
+  <template id="row">
+    <tr id="row{{rowIndex}}">
+      <td data-row="{{rowIndex}}" data-col="{{colIndex}}"> {{colStr}}</td>
+    </tr>
+  </template>
+
+  <title>Tic-Tac-Toe</title>
+  <style>
+    #ticTacToe td {
+      border: 2px solid black;
+      font-size: 54px;
+      width: 80px;
+      height: 80px;
+      text-align: center;
+    }
+    
+    .highlight {
       background-color: #FCE4BD;
-  }
-</style>
+    }
+  </style>
 </head>
+
 <body>
+  <template id="table"><table><tbody></tbody></table></template>
+  <template id="row"><tr></tr></template>
+  <template id="cell"><td></td></template>
   <div id="ticTacToe"></div>
   <script src="main.js"></script>
 </body>
