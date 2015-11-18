@@ -118,16 +118,17 @@ var Game = ({
     },
     moveIfGood: function (route) {
         // routePieces param will be passed human || computer.
+        var result;
         route.forEach(function (item) {
             if (item.value == null) {
                 //Get the rowId. use item, item.rowId, item.colId, Assign "O" to array element in Board.board
                 Board.board[item.rowId][item.colId] = computer;
                 Board.board[item.rowId][item.colId].readonly = true;
                 Board.render("#ticTacToe");
-                return { rowId: item.rowId, colId: item.colId, value: Board.board[item.rowId][item.colId] };
+                result = { rowId: item.rowId, colId: item.colId, value: Board.board[item.rowId][item.colId] };
             }
         });
-        return null;
+        return result;
     },
     fillNullSquare: function (i, j) {
         Board.board[i][j] = computer;
