@@ -242,7 +242,7 @@ function highlightWinRoute(winRoute) {
     for (var i = 0; i < winRoute.length; i++) {
         // The function will accept a boardCell and return a td element.
         var selection = getElementFromCell(winRoute[i]);
-        results.push(selection[0]);
+        results.push(selection);
     }
     for (var i = 0; i < results.length; i++) {
         results[i].classList.add("highlight");
