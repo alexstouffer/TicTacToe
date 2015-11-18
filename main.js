@@ -2,6 +2,9 @@
 //Trigger the makeMove() to show the users selection. You will have to trigger it from the onClick(). I am going to name it onClick() just so I can refer to it.
 //I changed the second if(isRouteThreat) call inside the onClick to use item.target instead of item.sender. That was causing an error.
 
+
+//When a winRoute exists, set the Game.status to "over".
+//On the click event, check if the Game.status is over, and if it is then exit the function
 var gameBoardElement = document.getElementById('ticTacToe');
 var human = "X";
 var computer = "O";
@@ -41,7 +44,7 @@ var Game = ({
     },
     board: Board.board,
     get status() {
-        return this.currentStatus;
+        return this._currentStatus;
     },
     set status(val) {
         this._currentStatus = val;
@@ -59,57 +62,59 @@ var Game = ({
       }
     },
     answerMove: function (tdElement) {
-
+        var result;
         var row = getRow(tdElement);
         var col = getCol(tdElement);
         var diag1 = getDiag1(tdElement);
         var diag2 = getDiag2(tdElement);
         //Will the computer win within next move?
         if (isRouteType(row, "Opportunity")) {
-            return Game.moveIfGood(row);
+            result = Game.moveIfGood(row);
         } else if (isRouteType(col, "Opportunity")) {
-            return Game.moveIfGood(col);
+            result = Game.moveIfGood(col);
         } else if (isRouteType(diag1, "Opportunity")) {
-            return Game.moveIfGood(diag1);
+            result = Game.moveIfGood(diag1);
         } else if (isRouteType(diag2, "Opportunity")) {
-            return Game.moveIfGood(diag2);
+            result = Game.moveIfGood(diag2);
         }
         //Will the computer lose within opponent's next move?
         else if (isRouteType(row, "Threat")) {
-            return Game.moveIfGood(row);
+            result = Game.moveIfGood(row);
         } else if (isRouteType(col, "Threat")) {
-            return Game.moveIfGood(col);
+            result = Game.moveIfGood(col);
         } else if (isRouteType(diag1, "Threat")) {
-            return Game.moveIfGood(diag1);
+            result = Game.moveIfGood(diag1);
         } else if (isRouteType(diag2, "Threat")) {
-            return Game.moveIfGood(diag2);
+            result = Game.moveIfGood(diag2);
             // No immediate win or loss, first fill center if null, then make routes by filling corners first
         } else if (Board.board[1][1] == null) {
-            return Game.fillNullSquare(1, 1);
+            result = Game.fillNullSquare(1, 1);
         } else if (Board.board[0][0] == null) {
-            return Game.fillNullSquare(0, 0);
+            result = Game.fillNullSquare(0, 0);
         } else if (Board.board[0][2] == null) {
-            return Game.fillNullSquare(0, 2);
+            result = Game.fillNullSquare(0, 2);
         }
         //top edge work-around
         else if (Board.board[0][1] == null) {
-            return Game.fillNullSquare(0, 1);
+            result = Game.fillNullSquare(0, 1);
         }
         else if (Board.board[2][0] == null) {
-            return Game.fillNullSquare(2, 0);
+            result = Game.fillNullSquare(2, 0);
         } else if (Board.board[2][2] == null) {
-            return Game.fillNullSquare(2, 2);
+            result = Game.fillNullSquare(2, 2);
         }
         // The corners are full. find whatever is left
         else if (Board.board[1][2] == null) {
-            return Game.fillNullSquare(1, 2);
+            result = Game.fillNullSquare(1, 2);
         }
         else if (Board.board[1][0] == null) {
-            return Game.fillNullSquare(1, 2);
+            result = Game.fillNullSquare(1, 2);
         }
         else if (Board.board[2][1] == null) {
-            return Game.fillNullSquare(2, 1);
+            result = Game.fillNullSquare(2, 1);
         }
+        if (!result) debugger;
+        return result;
     },
     moveIfGood: function (route) {
         // routePieces param will be passed human || computer.
@@ -196,10 +201,12 @@ function getMoveRoutes(tdElement) {
     return result;
 }
 
+//TODO: computer win isn't caught until next move
 document.getElementById("ticTacToe").addEventListener("click", function onClick(item) {
     //check if isGameOver. if it is return null.
     //we currently only check against the human move using tdElement. But that doesn't evaluate the computer's last move.
-    if (isGameOver) return null;
+    if (Game.status == Game.statuses.over) return null;
+    Game.status = Game.statuses.inProcess;
     var tdElement = item.target;
     if (tdElement.tagName !== "TD") return false;
     Game.makeMove(tdElement);
@@ -207,6 +214,7 @@ document.getElementById("ticTacToe").addEventListener("click", function onClick(
 
     if (winRoutes.length > 0) {
         isGameOver = true;
+        Game.status = Game.statuses.over;
         for (var i = 0; i < winRoutes.length; i++) {
             highlightWinRoute(winRoutes[i]);
         }
