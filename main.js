@@ -220,11 +220,14 @@ document.getElementById("ticTacToe").addEventListener("click", function onClick(
             highlightWinRoute(winRoutes[i]);
         }
     }
-    var computersMoveBoardCell = Game.answerMove(tdElement);
+    if (winRoutes.length == 0){
+      var computersMoveBoardCell = Game.answerMove(tdElement);
+    }
     if (!computersMoveBoardCell) return;
-    var computersMoveTd = getElementFromCell(computersMoveBoardCell);
+      var computersMoveTd = getElementFromCell(computersMoveBoardCell);
     var computerWinRoutes = getWinRoute(computersMoveTd);
     if (computerWinRoutes.length > 0) {
+        Game.status = Game.statuses.over;
         isGameOver = true;
         for (var i = 0; i < computerWinRoutes.length; i++) {
             highlightWinRoute(computerWinRoutes[i]);
