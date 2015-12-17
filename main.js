@@ -63,22 +63,17 @@ var Game = ({
     },
     answerMove: function (tdElement) {
         var result;
-        var row = getRow(tdElement);
-        var col = getCol(tdElement);
+        var row = getTDRow(tdElement);
+        var col = getTDCol(tdElement);
         var diag1 = getDiag1(tdElement);
         var diag2 = getDiag2(tdElement);
         //Will the computer win within next move?
-        if (isRouteType(row, "Opportunity")) {
-            result = Game.moveIfGood(row);
-        } else if (isRouteType(col, "Opportunity")) {
-            result = Game.moveIfGood(col);
-        } else if (isRouteType(diag1, "Opportunity")) {
-            result = Game.moveIfGood(diag1);
-        } else if (isRouteType(diag2, "Opportunity")) {
-            result = Game.moveIfGood(diag2);
+        //scanBoardRoutes will return an array of all routes, so that a condition statement can evaluate if there are any routes with 2 computer squares. It will then fill out the remaining square, end the move, and end the game.
+        function scanBoardRoutes (){
+
         }
         //Will the computer lose within opponent's next move?
-        else if (isRouteType(row, "Threat")) {
+        if (isRouteType(row, "Threat")) {
             result = Game.moveIfGood(row);
         } else if (isRouteType(col, "Threat")) {
             result = Game.moveIfGood(col);
@@ -192,8 +187,8 @@ function getWinRoute(passedElement) {
 //pass in 1 tdElement and return all existing routes from previous move that the element is on.
 function getMoveRoutes(tdElement) {
     var result = [];
-    result.push(getRow(tdElement));
-    result.push(getCol(tdElement));
+    result.push(getTDRow(tdElement));
+    result.push(getTDCol(tdElement));
     result.push(getDiag1(tdElement));
     result.push(getDiag2(tdElement));
     result.forEach(function (index, item) {
@@ -262,7 +257,7 @@ function highlightWinRoute(winRoute) {
 }
 
 //4 routes for possible win: row, column, and 2 diagonals.
-function getRow(td) {
+function getTDRow(td) {
     if (!td) return null;
     var rowId = td.dataset.row;
     var result = [];
@@ -271,7 +266,7 @@ function getRow(td) {
     });
     return result;
 }
-function getCol(td) {
+function getTDCol(td) {
     var colId = td.dataset.col;
     var result = [];
     for (var i = 0; i < Board.board.length; i++) {
@@ -279,14 +274,28 @@ function getCol(td) {
     }
     return result;
 }
-function getDiag1(td) {
+function getRow(number){
+  var result = [];
+  for (var i = 0; i < Board.board.length; i++){
+    result.push({ rowId: number, colId: i, value: Board.board[number][i]});
+  }
+  return result;
+}
+function getCol(number){
+  result = [];
+  for (var i = 0; i < Board.board.length; i++){
+    result.push({ rowId: i, colId: number, value: Board.board[i][number]});
+  }
+  return result;
+}
+function getDiag1() {
     var result = [];
     for (var i = 0, j = 0; i < Board.board.length; i++ , j++) {
         result.push({ rowId: i, colId: j, value: Board.board[i][j] });
     }
     return result;
 }
-function getDiag2(td) {
+function getDiag2() {
     var result = [];
     for (var i = 0, j = 2; i < Board.board.length; i++ , j--) {
         result.push({ rowId: i, colId: j, value: Board.board[i][j] });
