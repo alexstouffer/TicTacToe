@@ -70,7 +70,14 @@ var Game = ({
         //Will the computer win within next move?
         //scanBoardRoutes will return an array of all routes, so that a condition statement can evaluate if there are any routes with 2 computer squares. It will then fill out the remaining square, end the move, and end the game.
         function scanBoardRoutes (){
-
+          var arrayOfRouteArrays = [];
+          for(var i = 0; i < 3; i++){
+            arrayOfRouteArrays.push(getRow(i));
+            arrayOfRouteArrays.push(getCol(i));
+          }
+          arrayOfRouteArrays.push(getDiag1());
+          arrayOfRouteArrays.push(getDiag2());
+          return arrayOfRouteArrays;
         }
         //Will the computer lose within opponent's next move?
         if (isRouteType(row, "Threat")) {
