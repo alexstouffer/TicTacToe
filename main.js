@@ -68,8 +68,9 @@ var Game = ({
         var diag1 = getDiag1(tdElement);
         var diag2 = getDiag2(tdElement);
         //Will the computer win within next move?
-        //scanBoardRoutes will return an array of all routes, so that a condition statement can evaluate if there are any routes with 2 computer squares. It will then fill out the remaining square, end the move, and end the game.
+        //scanBoardRoutes will return an array of all routes, so that a condition statement can evaluate if there are any routes with 2 computer squares. It will then fill out the remaining square, end the move, and end the game.  
         function scanBoardRoutes (){
+        //Scan the board for all routes.
           var arrayOfRouteArrays = [];
           for(var i = 0; i < 3; i++){
             arrayOfRouteArrays.push(getRow(i));
@@ -77,8 +78,21 @@ var Game = ({
           }
           arrayOfRouteArrays.push(getDiag1());
           arrayOfRouteArrays.push(getDiag2());
-          return arrayOfRouteArrays;
+        }          
+        //Loop through array container and inspect inner array for 2 values equal to "O" and fills in item with null value, add else if for "X".
+        function inspectRoute(){
+          var routes = scanBoardRoutes();
+          for(var i = 0; i < routes.length; i++){
+            var result = routes[i].filter(function(square){
+                return square.value == "X" || "O";
+            })
+            //first check if this instance of a route contains two "O", before checking if two "X". Then fill the null square accordingly.
+            for (var j = 0; j < result.length; j++){
+                
+            }
+          }
         }
+
         //Will the computer lose within opponent's next move?
         if (isRouteType(row, "Threat")) {
             result = Game.moveIfGood(row);
@@ -127,7 +141,11 @@ var Game = ({
                 Board.board[item.rowId][item.colId] = computer;
                 Board.board[item.rowId][item.colId].readonly = true;
                 Board.render("#ticTacToe");
-                result = { rowId: item.rowId, colId: item.colId, value: Board.board[item.rowId][item.colId] };
+                result = { 
+                    rowId: item.rowId, 
+                    colId: item.colId, 
+                    value: Board.board[item.rowId][item.colId] 
+                };
             }
         });
         return result;
