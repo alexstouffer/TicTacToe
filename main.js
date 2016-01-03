@@ -63,22 +63,38 @@ var Game = ({
     },
     answerMove: function (tdElement) {
         var result;
-        var row = getRow(tdElement);
-        var col = getCol(tdElement);
+        var row = getTDRow(tdElement);
+        var col = getTDCol(tdElement);
         var diag1 = getDiag1(tdElement);
         var diag2 = getDiag2(tdElement);
         //Will the computer win within next move?
-        if (isRouteType(row, "Opportunity")) {
-            result = Game.moveIfGood(row);
-        } else if (isRouteType(col, "Opportunity")) {
-            result = Game.moveIfGood(col);
-        } else if (isRouteType(diag1, "Opportunity")) {
-            result = Game.moveIfGood(diag1);
-        } else if (isRouteType(diag2, "Opportunity")) {
-            result = Game.moveIfGood(diag2);
+        //scanBoardRoutes will return an array of all routes, so that a condition statement can evaluate if there are any routes with 2 computer squares. It will then fill out the remaining square, end the move, and end the game.  
+        function scanBoardRoutes (){
+        //Scan the board for all routes.
+          var arrayOfRouteArrays = [];
+          for(var i = 0; i < 3; i++){
+            arrayOfRouteArrays.push(getRow(i));
+            arrayOfRouteArrays.push(getCol(i));
+          }
+          arrayOfRouteArrays.push(getDiag1());
+          arrayOfRouteArrays.push(getDiag2());
+        }          
+        //Loop through array container and inspect inner array for 2 values equal to "O" and fills in item with null value, add else if for "X".
+        function inspectRoute(){
+          var routes = scanBoardRoutes();
+          for(var i = 0; i < routes.length; i++){
+            var result = routes[i].filter(function(square){
+                return square.value == "X" || "O";
+            })
+            //first check if this instance of a route contains two "O", before checking if two "X". Then fill the null square accordingly.
+            for (var j = 0; j < result.length; j++){
+                
+            }
+          }
         }
+
         //Will the computer lose within opponent's next move?
-        else if (isRouteType(row, "Threat")) {
+        if (isRouteType(row, "Threat")) {
             result = Game.moveIfGood(row);
         } else if (isRouteType(col, "Threat")) {
             result = Game.moveIfGood(col);
@@ -118,16 +134,21 @@ var Game = ({
     },
     moveIfGood: function (route) {
         // routePieces param will be passed human || computer.
+        var result;
         route.forEach(function (item) {
             if (item.value == null) {
                 //Get the rowId. use item, item.rowId, item.colId, Assign "O" to array element in Board.board
                 Board.board[item.rowId][item.colId] = computer;
                 Board.board[item.rowId][item.colId].readonly = true;
                 Board.render("#ticTacToe");
-                return { rowId: item.rowId, colId: item.colId, value: Board.board[item.rowId][item.colId] };
+                result = { 
+                    rowId: item.rowId, 
+                    colId: item.colId, 
+                    value: Board.board[item.rowId][item.colId] 
+                };
             }
         });
-        return null;
+        return result;
     },
     fillNullSquare: function (i, j) {
         Board.board[i][j] = computer;
@@ -191,8 +212,8 @@ function getWinRoute(passedElement) {
 //pass in 1 tdElement and return all existing routes from previous move that the element is on.
 function getMoveRoutes(tdElement) {
     var result = [];
-    result.push(getRow(tdElement));
-    result.push(getCol(tdElement));
+    result.push(getTDRow(tdElement));
+    result.push(getTDCol(tdElement));
     result.push(getDiag1(tdElement));
     result.push(getDiag2(tdElement));
     result.forEach(function (index, item) {
@@ -219,11 +240,14 @@ document.getElementById("ticTacToe").addEventListener("click", function onClick(
             highlightWinRoute(winRoutes[i]);
         }
     }
-    var computersMoveBoardCell = Game.answerMove(tdElement);
+    if (winRoutes.length == 0){
+      var computersMoveBoardCell = Game.answerMove(tdElement);
+    }
     if (!computersMoveBoardCell) return;
-    var computersMoveTd = getElementFromCell(computersMoveBoardCell);
+      var computersMoveTd = getElementFromCell(computersMoveBoardCell);
     var computerWinRoutes = getWinRoute(computersMoveTd);
     if (computerWinRoutes.length > 0) {
+        Game.status = Game.statuses.over;
         isGameOver = true;
         for (var i = 0; i < computerWinRoutes.length; i++) {
             highlightWinRoute(computerWinRoutes[i]);
@@ -258,7 +282,7 @@ function highlightWinRoute(winRoute) {
 }
 
 //4 routes for possible win: row, column, and 2 diagonals.
-function getRow(td) {
+function getTDRow(td) {
     if (!td) return null;
     var rowId = td.dataset.row;
     var result = [];
@@ -267,7 +291,7 @@ function getRow(td) {
     });
     return result;
 }
-function getCol(td) {
+function getTDCol(td) {
     var colId = td.dataset.col;
     var result = [];
     for (var i = 0; i < Board.board.length; i++) {
@@ -275,14 +299,28 @@ function getCol(td) {
     }
     return result;
 }
-function getDiag1(td) {
+function getRow(number){
+  var result = [];
+  for (var i = 0; i < Board.board.length; i++){
+    result.push({ rowId: number, colId: i, value: Board.board[number][i]});
+  }
+  return result;
+}
+function getCol(number){
+  result = [];
+  for (var i = 0; i < Board.board.length; i++){
+    result.push({ rowId: i, colId: number, value: Board.board[i][number]});
+  }
+  return result;
+}
+function getDiag1() {
     var result = [];
     for (var i = 0, j = 0; i < Board.board.length; i++ , j++) {
         result.push({ rowId: i, colId: j, value: Board.board[i][j] });
     }
     return result;
 }
-function getDiag2(td) {
+function getDiag2() {
     var result = [];
     for (var i = 0, j = 2; i < Board.board.length; i++ , j--) {
         result.push({ rowId: i, colId: j, value: Board.board[i][j] });
