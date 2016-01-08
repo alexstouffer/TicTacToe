@@ -88,13 +88,13 @@ var Game = ({
         var allRoutes = Board.getAllRoutes();
         //Will the computer win within next move?
         allRoutes.forEach(function (route) {
-            var hotSpace = this.isHotRoute(route, "0");
-            if (hotSpace) hotSpace.value = "0";
+            var hotSpace = Game.isHotRoute(route, computer);
+            if (hotSpace) hotSpace.value = computer;
         });
         //...Or, do we need to block a threat?
         allRoutes.forEach(function (route) {
-            var hotSpace = this.isHotRoute(route, "X");
-            if (hotSpace) hotSpace.value = "X";
+            var hotSpace = Game.isHotRoute(route, human);
+            if (hotSpace) hotSpace.value = computer;
         })      
         //Loop through array container and inspect inner array for 2 values equal to "O" and fills in item with null value, add else if for "X".
         function inspectRoute() {
@@ -146,7 +146,7 @@ var Game = ({
         else if (Board.board[2][1] == null) {
             result = Game.fillNullSquare(2, 1);
         }
-        if (!result) debugger;
+        if (!result) alert("Game Over: Stalemate");
         return result;
     },
     moveIfGood: function (route) {
