@@ -1,10 +1,3 @@
-//Change makeMove to assign the "X" to the array instead of the HTML, and then have it call Board.render()
-//Trigger the makeMove() to show the users selection. You will have to trigger it from the onClick(). I am going to name it onClick() just so I can refer to it.
-//I changed the second if(isRouteThreat) call inside the onClick to use item.target instead of item.sender. That was causing an error.
-
-
-//When a winRoute exists, set the Game.status to "over".
-//On the click event, check if the Game.status is over, and if it is then exit the function
 var gameBoardElement = document.getElementById('ticTacToe');
 var human = "X";
 var computer = "O";
@@ -67,6 +60,10 @@ var Game = ({
         if (nulls.length === 1) return nulls[0];
         return false;
     },
+    isWinRoute: function (route, pieceType) {
+        if (route.filter(function (square) { return square.value === pieceType; }).length === 3) return;  
+    },
+    //Placing the piece on the board
     makeMove: function (td) {
         //check if element is empty. If true, put an "X" in it.
         //get row id , column id, update Board.board[rowId][colId], Board.render();
@@ -98,16 +95,6 @@ var Game = ({
             var hotSpace = Game.isHotRoute(route, human);
             if (hotSpace) result = Game.fillNullSquare(hotSpace.rowId, hotSpace.colId);
         })      
-        /*//Will the computer lose within opponent's next move?
-        if (isRouteType(row, "Threat")) {
-            result = Game.moveIfGood(row);
-        } else if (isRouteType(col, "Threat")) {
-            result = Game.moveIfGood(col);
-        } else if (isRouteType(diag1, "Threat")) {
-            result = Game.moveIfGood(diag1);
-        } else if (isRouteType(diag2, "Threat")) {
-            result = Game.moveIfGood(diag2);
-        }*/
         // No immediate win or loss, first fill center if null, then make routes by filling corners first
         if(!result){
             if (Board.board[1][1] == null) {
@@ -140,24 +127,6 @@ var Game = ({
         if (!result) alert("Game Over: Stalemate");
         return result;
     },
-    moveIfGood: function (route) {
-        // routePieces param will be passed human || computer.
-        var result;
-        route.forEach(function (item) {
-            if (item.value == null) {
-                //Get the rowId. use item, item.rowId, item.colId, Assign "O" to array element in Board.board
-                Board.board[item.rowId][item.colId] = computer;
-                Board.board[item.rowId][item.colId].readonly = true;
-                Board.render("#ticTacToe");
-                result = {
-                    rowId: item.rowId,
-                    colId: item.colId,
-                    value: Board.board[item.rowId][item.colId]
-                };
-            }
-        });
-        return result;
-    },
     fillNullSquare: function (i, j) {
         Board.board[i][j] = computer;
         Board.board[i][j].readonly = true;
@@ -174,31 +143,15 @@ var replaceTemplate = function (templateId, values) {
     return template;
 }
 
-//create a class called boardCell. A function that accepts 3 params: rowId, colId, value. Sets all properties to its respective value and returns.
-
+//Object Constructor for boardCell. Creates logical boardCell.
 var boardCell = function (rowId, colId, value) {
     this.rowId = rowId;
     this.colId = colId;
     this.value = value;
     return this;
 }
-function isRouteType(route, type) {
-    if (type === "Threat") {
-        var search = human;
-    } else if (type === "Opportunity") {
-        var search = computer;
-    }
-    var itemCount = route.reduce(function (index, item) {
-        return index + (item.value === search);
-    }, 0);
-    var nullCount = route.reduce(function (index, item) {
-        return index + (item.value === null);
-    }, 0);
-    return itemCount === 2 && nullCount == 1;
-}
 
-//Accepts the tdElement that the human clicked on, and returns any winning routes that move is in.
-// Check array and see if moveRoute[i].value to see if it's different from playedPiece.
+//TODO: make getWinRoute take getAllRoutes and eval for 3 of same pieceType.
 function getWinRoute(passedElement) {
     var moveRoutes = getMoveRoutes(passedElement);
     var winResult = [];
@@ -217,7 +170,7 @@ function getWinRoute(passedElement) {
     return winResult;
 }
 
-//pass in 1 tdElement and return all existing routes from previous move that the element is on.
+//TODO: Remove once getWinRoutes checks from getAllRoutes.
 function getMoveRoutes(tdElement) {
     var result = [];
     result.push(getTDRow(tdElement));
@@ -230,16 +183,23 @@ function getMoveRoutes(tdElement) {
     return result;
 }
 
-//TODO: computer win isn't caught until next move
+//What happens on click event
 document.getElementById("ticTacToe").addEventListener("click", function onClick(item) {
     //check if isGameOver. if it is return null.
-    //we currently only check against the human move using tdElement. But that doesn't evaluate the computer's last move.
     if (Game.status == Game.statuses.over) return null;
     Game.status = Game.statuses.inProcess;
     var tdElement = item.target;
     if (tdElement.tagName !== "TD") return false;
     Game.makeMove(tdElement);
-    var winRoutes = getWinRoute(tdElement);
+    //winRoutes returns an array of winRoutes
+    var winRoutes = Game.isWinRoute();    
+    /*
+    allRoutes.forEach(function (route) {
+            if (result) return;
+            var hotSpace = Game.isHotRoute(route, human);
+            if (hotSpace) result = Game.fillNullSquare(hotSpace.rowId, hotSpace.colId);
+    })    
+    */
 
     if (winRoutes.length > 0) {
         isGameOver = true;
