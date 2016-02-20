@@ -88,29 +88,17 @@ var Game = ({
         var allRoutes = Board.getAllRoutes();
         //Will the computer win within next move?
         allRoutes.forEach(function (route) {
+            if (result) return;
             var hotSpace = Game.isHotRoute(route, computer);
-            if (hotSpace) hotSpace.value = computer;
+            if (hotSpace) result = Game.fillNullSquare(hotSpace.rowId, hotSpace.colId);
         });
         //...Or, do we need to block a threat?
         allRoutes.forEach(function (route) {
+            if (result) return;
             var hotSpace = Game.isHotRoute(route, human);
-            if (hotSpace) hotSpace.value = computer;
+            if (hotSpace) result = Game.fillNullSquare(hotSpace.rowId, hotSpace.colId);
         })      
-        //Loop through array container and inspect inner array for 2 values equal to "O" and fills in item with null value, add else if for "X".
-        function inspectRoute() {
-            var routes = getAllRoutes();
-            for (var i = 0; i < routes.length; i++) {
-                var result = routes[i].filter(function (square) {
-                    return square.value == "X" || "O";
-                })
-                //first check if this instance of a route contains two "O", before checking if two "X". Then fill the null square accordingly.
-                for (var j = 0; j < result.length; j++) {
-
-                }
-            }
-        }
-
-        //Will the computer lose within opponent's next move?
+        /*//Will the computer lose within opponent's next move?
         if (isRouteType(row, "Threat")) {
             result = Game.moveIfGood(row);
         } else if (isRouteType(col, "Threat")) {
@@ -119,32 +107,35 @@ var Game = ({
             result = Game.moveIfGood(diag1);
         } else if (isRouteType(diag2, "Threat")) {
             result = Game.moveIfGood(diag2);
-            // No immediate win or loss, first fill center if null, then make routes by filling corners first
-        } else if (Board.board[1][1] == null) {
-            result = Game.fillNullSquare(1, 1);
-        } else if (Board.board[0][0] == null) {
-            result = Game.fillNullSquare(0, 0);
-        } else if (Board.board[0][2] == null) {
-            result = Game.fillNullSquare(0, 2);
-        }
-        //top edge work-around
-        else if (Board.board[0][1] == null) {
-            result = Game.fillNullSquare(0, 1);
-        }
-        else if (Board.board[2][0] == null) {
-            result = Game.fillNullSquare(2, 0);
-        } else if (Board.board[2][2] == null) {
-            result = Game.fillNullSquare(2, 2);
-        }
-        // The corners are full. find whatever is left
-        else if (Board.board[1][2] == null) {
-            result = Game.fillNullSquare(1, 2);
-        }
-        else if (Board.board[1][0] == null) {
-            result = Game.fillNullSquare(1, 2);
-        }
-        else if (Board.board[2][1] == null) {
-            result = Game.fillNullSquare(2, 1);
+        }*/
+        // No immediate win or loss, first fill center if null, then make routes by filling corners first
+        if(!result){
+            if (Board.board[1][1] == null) {
+                result = Game.fillNullSquare(1, 1);
+            } else if (Board.board[0][0] == null) {
+                result = Game.fillNullSquare(0, 0);
+            } else if (Board.board[0][2] == null) {
+                result = Game.fillNullSquare(0, 2);
+            }
+            //top edge work-around
+            else if (Board.board[0][1] == null) {
+                result = Game.fillNullSquare(0, 1);
+            }
+            else if (Board.board[2][0] == null) {
+                result = Game.fillNullSquare(2, 0);
+            } else if (Board.board[2][2] == null) {
+                result = Game.fillNullSquare(2, 2);
+            }
+            // The corners are full. find whatever is left
+            else if (Board.board[1][2] == null) {
+                result = Game.fillNullSquare(1, 2);
+            }
+            else if (Board.board[1][0] == null) {
+                result = Game.fillNullSquare(1, 2);
+            }
+            else if (Board.board[2][1] == null) {
+                result = Game.fillNullSquare(2, 1);
+            }
         }
         if (!result) alert("Game Over: Stalemate");
         return result;
